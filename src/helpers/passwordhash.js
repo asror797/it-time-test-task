@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt")
 
 const passwordHash = password => {
-   return bcrypt.hashSync(password,'password');
+   return bcrypt.hashSync(password,5);
 }
 
 const passwordVerify = (password ,hash) => {

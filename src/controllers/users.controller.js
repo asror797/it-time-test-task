@@ -1,3 +1,4 @@
+const { passwordHash } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 
 
@@ -13,7 +14,35 @@ module.exports = {
    },
    CREATE_USER:async(req,res) => {
       try {
-         const { fullname , username , age , phonenumber , email , password } = req.body
+         const { 
+                  fullname,
+                  username,
+                  age,
+                  phonenumber, 
+                  email, 
+                  password 
+               } = req.body
+
+         const hashedPassword = passwordHash(password)
+
+         const newUser = await usersModel.create({
+            fullname:fullname,
+            username:username,
+            age:age,
+            phonenumber:phonenumber,
+            email:email,
+            password:hashedPassword
+         })
+
+         res.json(newUser)
+
+      } catch (error) {
+         console.log(error)
+         res.sendStatus(500)
+      }
+   },
+   LOGIN:async(req,res) => {
+      try {
          
       } catch (error) {
          
