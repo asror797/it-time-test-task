@@ -1,4 +1,5 @@
-const { passwordHash } = require('../helpers/passwordhash')
+const { tokenGenerate, tokenVerify } = require('../helpers/jwt')
+const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 
 
@@ -43,9 +44,34 @@ module.exports = {
    },
    LOGIN:async(req,res) => {
       try {
-         
+         const {
+            email,
+            password
+         } = req.body
+
+         const user = await usersModel.findOne({
+            where:{email:email}
+         })
+
+         const isCorrect = passwordVerify(password,user.password)
+
+         if(isCorrect) {
+
+            const token = tokenGenerate(email)
+            res.json({
+               status:200,
+               message:"You are logged",
+               token:token
+            })
+         }else {
+            res.json({
+               message:"password is wrong"
+            })
+         }
+
       } catch (error) {
-         
+         console.log(user)
+         res.sendStatus(500)
       }
    }
 }

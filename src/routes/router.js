@@ -7,5 +7,6 @@ const router = Router()
 router
       .get('/users',users.GET)
       .post('/auth/registir',users.CREATE_USER)
+      .put('/auth/login',users.LOGIN)
 
 module.exports = router

@@ -1,5 +1,14 @@
 const jwt = require('jsonwebtoken')
 
-const verify = a => {
-   console.log(a)
+const tokenGenerate = email => {
+   return jwt.sign(email,'secretkey')
+}
+
+const tokenVerify = hash => {
+   return jwt.verify(hash,'secretkey')
+}
+
+module.exports = {
+   tokenGenerate,
+   tokenVerify
 }
