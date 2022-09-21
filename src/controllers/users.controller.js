@@ -10,5 +10,13 @@ module.exports = {
          console.log(error)
          res.sendStatus(500)
       }
+   },
+   CREATE_USER:async(req,res) => {
+      try {
+         const { fullname , username , age , phonenumber , email , password } = req.body
+         
+      } catch (error) {
+         
+      }
    }
 }
