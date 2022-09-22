@@ -30,20 +30,33 @@ module.exports = {
 
          const hashedPassword = passwordHash(password)
 
-         const newUser = await usersModel.create({
-            fullname:fullname,
-            username:username,
-            age:age,
-            phonenumber:phonenumber,
-            email:email,
-            password:hashedPassword
+         const isEmpty = await usersModel.findOne({
+            where:{username:username}
          })
 
-         res.json({
-            status:200,
-            message:"Account created",
-            token:tokenGenerate(newUser.id)
-         })
+         if(!isEmpty) {
+            const newUser = await usersModel.create({
+               fullname:fullname,
+               username:username,
+               age:age,
+               phonenumber:phonenumber,
+               email:email,
+               password:hashedPassword
+            })
+   
+            res.json({
+               status:200,
+               message:"Account created",
+               token:tokenGenerate(newUser.id)
+            })
+
+         }else {
+            res.json({
+               status:200,
+               message:"username orqali ro'yhatdan otilgan"
+            })
+         }
+
 
       } catch (error) {
          console.log(error)
