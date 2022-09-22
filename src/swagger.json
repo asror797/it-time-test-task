@@ -172,6 +172,14 @@
                             }
                         }
                     }
+                },
+                "responses":{
+                    "200":{
+                        "description":"ok",
+                        "schema":{
+                            "$ref":"#/definitions/Message"
+                        }
+                    }
                 }
             }
         },
@@ -189,6 +197,14 @@
                             "schema": {
                                 "$ref":"#/definitions/NewPassword"
                             }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"ok",
+                        "schema":{
+                            "$ref":"#/definitions/Message"
                         }
                     }
                 }
@@ -302,15 +318,15 @@
            }
        },
        "delete": {
-        "type":"object",
-        "properties":{
-            "token":{
-                "type":"string"
-            },
-            "password":{
-                "type":"string"
+            "type":"object",
+            "properties":{
+                "token":{
+                    "type":"string"
+                },
+                "password":{
+                    "type":"string"
+                }
             }
-        }
        }
    }
 }

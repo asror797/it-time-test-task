@@ -66,11 +66,13 @@ module.exports = {
                   where:{id:userID}
                })
    
-               console.log(deletedUser)
    
-               res.json("deleted")
+               res.json({
+                  status:200,
+                  message:`deleted ${deletedUser}`
+               })
             }else {
-               res.send("error occured")
+               res.send("Error")
             }
 
          }else {
