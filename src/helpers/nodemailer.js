@@ -13,13 +13,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
  }));
  
 
- transporter.sendMail(mailOptions, function(error, info){
-   if (error) {
-     console.log(error);
-   } else {
-     console.log('Email sent: ' + info.response);
-   }
- });
+ 
 
 
 
@@ -29,16 +23,21 @@ const passwordResetLink = (email,code) => {
       from:'asror.shahobiddinov7@gmail.com',
       to:email,
       subject:'Password reset code',
-      text:`Your code for password reset <strong> ${code}</strong>`
+      html:`Your code for password reset <strong> ${code}</strong>`
    }
+
+   let status = "ok"
    transporter.sendMail(mailOptions , (error, info) => {
       if(error) {
+         status =  "error occured"
          console.log(error)
       }else {
+         status =  "Code sent your email"
          console.log(info)
-         return "ok"
       }
    })
+
+   return status;
 } 
 
 module.exports = {

@@ -21,6 +21,12 @@ app.get('/',(req,res) => {
 })
 
 app.use(router)
+
+
+app.get('*',(_,res) => {
+   res.sendStatus(404)
+})
+
 app.listen(9000,() => {
    console.log('Server is ready at 5000 port ')
 })

@@ -2,6 +2,8 @@ const { tokenGenerate, tokenVerify } = require('../helpers/jwt')
 const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 const codeToken = require("generate-sms-verification-code")
+const { passwordResetLink } = require('../helpers/nodemailer')
+const Users = require('../models/users.model')
 
 
 module.exports = {
@@ -89,12 +91,42 @@ module.exports = {
    },
    "PASSWORD_RESET":async(req,res) => {
       try {
-         console.log(req.url)
-         res.json(codeToken(5,{type:'number'}))
+
+         const { email } = req.body
+
+         const user = await Users.findOne({
+            where:{email:email}
+         })
+
+
+         if(user) {
+
+            const status = passwordResetLink(email,codeToken(5,{type:'number'}))
+
+            console.log(status)
+
+            res.json({
+               status:200,
+               message:status
+            })
+         }else {
+            res.json({
+               status:200,
+               message:"Bu email mavjud emas"
+            })
+         }
 
       } catch (error) {
          console.log(error)
          res.sendStatus(500)  
+      }
+   },
+   "USERNAME_CHECKER":async(req,res) => {
+      try {
+         res.json("ok")
+      } catch (error) {
+         console.log(error)
+         res.sendStatus(500)
       }
    }
 }
