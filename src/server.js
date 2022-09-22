@@ -5,6 +5,9 @@ require('./models/users.model')
 const sequelize = require('./config/sequelize')
 const swaggerUi = require("swagger-ui-express")
 const swaggerDocument = require('./swagger.json')
+const cors = require('cors')
+
+app.use(cors())
 
 app.use(express.json())
 sequelize   

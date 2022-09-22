@@ -12,11 +12,7 @@
    "servers": [
        {
            "url": "/",
-           "description": "Local Dev, or from Heroku"
-       },
-       {
-           "url": "/api/",
-           "description": "With docker-compose and nginx proxy"
+           "description": "Main server Linode"
        }
    ],
    "tags": [
@@ -84,14 +80,14 @@
            "tags":[
               "Auth"
            ],
-           "summary": "Get all users",
+           "summary": "Delete Account",
               "requestBody":{
                  "description":"User info object",
                  "required":true,
                  "content": {
                     "application/json": {
                        "schema": {
-                          "$ref":"#/definitions/UserInfo"
+                          "$ref":"#/definitions/delete"
                        }
                     }
                  }
@@ -100,7 +96,7 @@
                  "200": {
                     "description":"OK",
                     "schema": {
-                       "$ref":"#/definitions/User"
+                       "$ref":"#/definitions/Message"
                     }
                  }
               }
@@ -304,6 +300,17 @@
                 "type":"string"
                }
            }
+       },
+       "delete": {
+        "type":"object",
+        "properties":{
+            "token":{
+                "type":"string"
+            },
+            "password":{
+                "type":"string"
+            }
+        }
        }
    }
 }

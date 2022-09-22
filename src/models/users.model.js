@@ -13,7 +13,7 @@ const Users = sequelize.define('users',{
       allowNull:false
    },
    username:{
-      type:DataTypes.STRING(16),
+      type:DataTypes.STRING(32),
       allowNull:false,
       unique:true
    },
