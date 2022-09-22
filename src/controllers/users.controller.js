@@ -53,19 +53,27 @@ module.exports = {
             where:{email:email}
          })
 
-         const isCorrect = passwordVerify(password,user.password)
+         if(user) {
+            const isCorrect = passwordVerify(password,user.password)
+            if(isCorrect) {
+   
+               const token = tokenGenerate(email)
+               res.json({
+                  status:200,
+                  message:"You are logged",
+                  token:token
+               })
+            }else {
+               res.json({
+                  status:200,
+                  message:"wrong password"
+               })
+            }
 
-         if(isCorrect) {
-
-            const token = tokenGenerate(email)
-            res.json({
-               status:200,
-               message:"You are logged",
-               token:token
-            })
          }else {
             res.json({
-               message:"password is wrong"
+               status:200,
+               message:"email doesn't exit"
             })
          }
 

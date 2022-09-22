@@ -3,6 +3,8 @@ const app = express()
 const router = require('./routes/router')
 require('./models/users.model')
 const sequelize = require('./config/sequelize')
+const swaggerUi = require("swagger-ui-express")
+const swaggerDocument = require('./swagger.json')
 
 app.use(express.json())
 sequelize   
@@ -11,6 +13,8 @@ sequelize
     .catch((err) => console.error(err))
 sequelize.sync().then(() => console.log("OK"))
 
+
+app.use('/swagger',swaggerUi.serve,swaggerUi.setup(swaggerDocument))
 
 app.get('/',(req,res) => {
    res.send('ok')
