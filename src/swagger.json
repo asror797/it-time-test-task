@@ -39,7 +39,7 @@
        "application/json"
    ],
    "paths": {
-       "/user": {
+       "/users": {
            "get": {
                "tags": [
                    "Users"
@@ -87,28 +87,58 @@
            }
        },
        "/auth/registir": {
-         "parameters": [
-            {
-
-            }
-         ],
          "post": {
             "tags":[
                "Auth"
-            ]
+            ],
+            "summary": "Get all users",
+               "requestBody":{
+                  "description":"User info object",
+                  "required":true,
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref":"#/definitions/UserInfo"
+                        }
+                     }
+                  }
+               },
+               "responses":{
+                  "200": {
+                     "description":"OK",
+                     "schema": {
+                        "$ref":"#/definitions/User"
+                     }
+                  }
+               }
          }
 
        },
        "/auth/login": {
-         "parameters": [
-            {
-
-            }
-         ],
-         "post": {
+         "put": {
             "tags":[
                "Auth"
-            ]
+            ],
+            "summary":"Login User",
+               "requestBody":{
+                  "description":"User email and password Object",
+                  "required":true,
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref":"#/definitions/UserLogin"
+                        }
+                     }
+                  }
+               },
+               "responses": {
+                  "200": {
+                     "description":"OK",
+                     "schema": {
+                        "$ref":"#/definitions/Message"
+                     }
+                  }
+               }
          }
 
        },
@@ -249,6 +279,48 @@
                   "type":"string"
                }
            }
+       },
+       "UserInfo": {
+            "type:":"object",
+            "properties": {
+               "fullname":{
+                  "type":"string"
+               },
+               "username":{
+                  "type":"string"
+               },
+               "email":{
+                  "type":"string"
+               },
+               "phonenumber":{
+                  "type":"string"
+               },
+               "age":{
+                  "type":"number"
+               },
+               "password":{
+                  "type":"string"
+               }
+            }
+       },
+       "UserLogin": {
+            "type":"object",
+            "properties": {
+               "email":{
+                  "type":"string"
+               },
+               "password": {
+                  "type":"string"
+               }
+            }
+       },
+       "Message": {
+         "type":"object",
+         "properties": {
+            "status":"number",
+            "message":"string",
+            "token":"string"
+         }
        },
        "Cats": {
            "type": "object",

@@ -1,6 +1,7 @@
 const { tokenGenerate, tokenVerify } = require('../helpers/jwt')
 const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
+const codeToken = require("generate-sms-verification-code")
 
 
 module.exports = {
@@ -35,7 +36,11 @@ module.exports = {
             password:hashedPassword
          })
 
-         res.json(newUser)
+         res.json({
+            status:200,
+            "message":"Account created",
+            "token":tokenGenerate(newUser.id)
+         })
 
       } catch (error) {
          console.log(error)
@@ -57,7 +62,7 @@ module.exports = {
             const isCorrect = passwordVerify(password,user.password)
             if(isCorrect) {
    
-               const token = tokenGenerate(email)
+               const token = tokenGenerate(user.id)
                res.json({
                   status:200,
                   message:"You are logged",
@@ -78,8 +83,18 @@ module.exports = {
          }
 
       } catch (error) {
-         console.log(user)
+         console.log(error)
          res.sendStatus(500)
+      }
+   },
+   "PASSWORD_RESET":async(req,res) => {
+      try {
+         console.log(req.url)
+         res.json(codeToken(5,{type:'number'}))
+
+      } catch (error) {
+         console.log(error)
+         res.sendStatus(500)  
       }
    }
 }
