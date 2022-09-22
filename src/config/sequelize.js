@@ -1,11 +1,11 @@
 const { Sequelize } = require('sequelize')
 
 const sequelize = new Sequelize({
-    username: 'asror',
-    password: 'aaa13579#',
+    username: 'postgres',
+    password: 'asrorbek797',
     port: 5432,
     database: 'ittime',
-    host: 'localhost',
+    host: 'database-asror.c19rfkgwlhv1.us-east-1.rds.amazonaws.com',
     dialect: 'postgres'
 })
 
