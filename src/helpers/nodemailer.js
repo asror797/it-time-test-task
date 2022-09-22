@@ -30,9 +30,10 @@ const passwordResetLink = (email,code) => {
    transporter.sendMail(mailOptions , (error, info) => {
       if(error) {
          status =  "error occured"
-         console.log(error)
+         return "error"
       }else {
          status =  "Code sent your email"
+
          console.log(info)
       }
    })

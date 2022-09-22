@@ -1,9 +1,10 @@
-const { tokenGenerate, tokenVerify } = require('../helpers/jwt')
+const { tokenGenerate } = require('../helpers/jwt')
 const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 const codeToken = require("generate-sms-verification-code")
 const { passwordResetLink } = require('../helpers/nodemailer')
 const Users = require('../models/users.model')
+const Code = require('./../models/smscode.model')
 
 
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
                   email, 
                   password 
                } = req.body
+
 
          const hashedPassword = passwordHash(password)
 
@@ -80,7 +82,7 @@ module.exports = {
          }else {
             res.json({
                status:200,
-               message:"email doesn't exit"
+               message:"Bu email bilan ro'yxatdan o'tilmagan"
             })
          }
 
@@ -89,7 +91,7 @@ module.exports = {
          res.sendStatus(500)
       }
    },
-   "PASSWORD_RESET":async(req,res) => {
+   PASSWORD_RESET:async(req,res) => {
       try {
 
          const { email } = req.body
@@ -100,14 +102,18 @@ module.exports = {
 
 
          if(user) {
-
-            const status = passwordResetLink(email,codeToken(5,{type:'number'}))
+            const generatedCode = codeToken(5,{type:'number'})
+            const status = passwordResetLink(email,generatedCode)
 
             console.log(status)
+            const {dataValues} = await Code.create({
+               email:email,
+               code:generatedCode
+            })
 
             res.json({
                status:200,
-               message:status
+               message:`To ${dataValues.email} sent verification code `
             })
          }else {
             res.json({
@@ -121,7 +127,43 @@ module.exports = {
          res.sendStatus(500)  
       }
    },
-   "USERNAME_CHECKER":async(req,res) => {
+   PASSWORD_REFRESH:async(req,res) => {
+      try {
+         const { password } = req.body
+         
+         res.json("ok")
+      } catch (error) {
+         console.log(error)
+         res.sendStatus(500)
+      }
+   },
+   CODE_CHECKER:async(req,res) => {
+      try {
+         const { code, email } = req.body
+
+         const verifiedCode = await Code.findOne({
+            where:{
+               email:email,
+               code:code,
+               isVerfied:false
+            }
+         })
+
+         if(verifiedCode) {
+            const updateStatus = await Code.update({
+
+            })
+         }else {
+            res.json({
+               status:200,
+               message:"email hato"
+            })
+         }
+      } catch (error) {
+         
+      }
+   },
+   USERNAME_CHECKER:async(req,res) => {
       try {
          res.json("ok")
       } catch (error) {
