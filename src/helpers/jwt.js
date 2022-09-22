@@ -8,7 +8,18 @@ const tokenVerify = hash => {
    return jwt.verify(hash,'secretkey')
 }
 
+
+const tokenGenerateP = id => {
+   return jwt.sign(id,'secretkeyforcode')
+}
+
+const tokenVerifyP = hash => {
+   return jwt.verify(hash,'secretkeyforcode')
+}
+
 module.exports = {
    tokenGenerate,
-   tokenVerify
+   tokenVerify,
+   tokenGenerateP,
+   tokenVerifyP
 }

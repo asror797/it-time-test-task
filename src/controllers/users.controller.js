@@ -1,4 +1,4 @@
-const { tokenGenerate } = require('../helpers/jwt')
+const { tokenGenerate, tokenGenerateP, tokenVerifyP } = require('../helpers/jwt')
 const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 const codeToken = require("generate-sms-verification-code")
@@ -28,6 +28,7 @@ module.exports = {
                   password 
                } = req.body
 
+         // if()
 
          const hashedPassword = passwordHash(password)
 
@@ -102,7 +103,7 @@ module.exports = {
 
 
          if(user) {
-            const generatedCode = codeToken(5,{type:'number'})
+            const generatedCode = codeToken(6,{type:'number'})
             const status = passwordResetLink(email,generatedCode)
 
             console.log(status)
@@ -129,9 +130,34 @@ module.exports = {
    },
    PASSWORD_REFRESH:async(req,res) => {
       try {
-         const { password } = req.body
-         
-         res.json("ok")
+         const { token , newPassword } = req.body
+
+         const email = tokenVerifyP(token)
+
+         if(email) {
+            const user = await usersModel.update({
+               password:passwordHash(newPassword)
+            },
+            {
+               where:{
+                  email:email
+               }
+            })
+   
+            res.json({
+               status:200,
+               message:"password changed",
+               token:tokenGenerate(user.id)
+            })
+
+         }else {
+            res.json({
+               status:200,
+               message:"error occured"
+            })
+         }
+
+
       } catch (error) {
          console.log(error)
          res.sendStatus(500)
@@ -145,14 +171,22 @@ module.exports = {
             where:{
                email:email,
                code:code,
-               isVerfied:false
+               isVerified:false
             }
          })
 
          if(verifiedCode) {
             const updateStatus = await Code.update({
-
+               isVerified:true,
+            },
+            {
+               where:{
+                  email:email
+               }
             })
+
+
+            res.json(tokenGenerateP(email))
          }else {
             res.json({
                status:200,
@@ -160,7 +194,8 @@ module.exports = {
             })
          }
       } catch (error) {
-         
+         console.log(error)
+         res.sendStatus(500)
       }
    },
    USERNAME_CHECKER:async(req,res) => {
