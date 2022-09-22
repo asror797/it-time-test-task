@@ -25,9 +25,6 @@
          "description": "API for users in database"
       },
       {
-         "name": "Cats",
-         "description": "API for cats in the system"
-      },{
          "name":"Auth",
          "description":"Authoration user"
       }
@@ -51,37 +48,6 @@
                        "schema": {
                            "$ref": "#/definitions/User"
                        }
-                   }
-               }
-           },
-           "post": {
-               "tags": [
-                   "Users"
-               ],
-               "summary": "Create a new user",
-               "requestBody": {
-                   "description": "User Object",
-                   "required": true,
-                   "content": {
-                       "application/json": {
-                           "schema": {
-                               "$ref": "#/definitions/User"
-                           }
-                       }
-                   }
-               },
-               "produces": [
-                   "application/json"
-               ],
-               "responses": {
-                   "200": {
-                       "description": "OK",
-                       "schema": {
-                           "$ref": "#/definitions/id"
-                       }
-                   },
-                   "400": {
-                       "description": "Failed. Bad post data."
                    }
                }
            }
@@ -112,8 +78,34 @@
                   }
                }
          }
-
        },
+       "/auth/delete": {
+        "delete": {
+           "tags":[
+              "Auth"
+           ],
+           "summary": "Get all users",
+              "requestBody":{
+                 "description":"User info object",
+                 "required":true,
+                 "content": {
+                    "application/json": {
+                       "schema": {
+                          "$ref":"#/definitions/UserInfo"
+                       }
+                    }
+                 }
+              },
+              "responses":{
+                 "200": {
+                    "description":"OK",
+                    "schema": {
+                       "$ref":"#/definitions/User"
+                    }
+                 }
+              }
+        }
+      },
        "/auth/login": {
          "put": {
             "tags":[
@@ -140,8 +132,72 @@
                   }
                }
          }
-
-       }
+        },
+        "/auth/forgot": {
+            "put": {
+                "tags":[
+                    "Auth"
+                ],
+                "summary":"Forgot password code send",
+                "requestBody": {
+                    "description":"Email objet",
+                    "required":true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/definitions/Email"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description":"OK",
+                        "schema": {
+                            "$ref":"#/definitions/Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verify": {
+            "put": {
+                "tags":[
+                    "Auth"
+                ],
+                "summary":"Verify Code",
+                "requestBody": {
+                    "description":"Email and code object",
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/definitions/Verify"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/change-password": {
+            "post": {
+                "tags":[
+                    "Auth"
+                ],
+                "summary":"Change password",
+                "requestBody": {
+                    "description":"Email and code object",
+                    "required":true,
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/definitions/NewPassword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
    },
    "definitions": {
        "id": {
@@ -205,22 +261,47 @@
                }
             }
        },
+       "Email": {
+            "type":"object",
+            "properties": {
+                "email":{
+                    "type":"string"
+                }
+            }
+       },
+       "Verify": {
+        "type":"object",
+        "properties": {
+            "email":{
+                "type":"string"
+            },
+            "code":{
+                "type":"number"
+            }
+        }
+       },
        "Message": {
          "type":"object",
          "properties": {
-            "status":"number",
-            "message":"string",
-            "token":"string"
+            "status":{
+                "type":"number"
+            },
+            "message":{
+                "type":"string"
+            },
+            "token":{
+                "type":"string"
+            }
          }
        },
-       "Cats": {
+       "NewPassword": {
            "type": "object",
            "properties": {
-               "cats": {
-                   "type": "object",
-                   "additionalProperties": {
-                       "$ref": "#/definitions/User"
-                   }
+               "token":{
+                "type":"string"
+               },
+               "newPassword":{
+                "type":"string"
                }
            }
        }

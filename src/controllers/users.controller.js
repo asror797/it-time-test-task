@@ -1,4 +1,4 @@
-const { tokenGenerate, tokenGenerateP, tokenVerifyP } = require('../helpers/jwt')
+const { tokenGenerate, tokenGenerateP, tokenVerifyP, tokenVerify } = require('../helpers/jwt')
 const { passwordHash, passwordVerify } = require('../helpers/passwordhash')
 const usersModel = require('../models/users.model')
 const codeToken = require("generate-sms-verification-code")
@@ -28,8 +28,6 @@ module.exports = {
                   password 
                } = req.body
 
-         // if()
-
          const hashedPassword = passwordHash(password)
 
          const newUser = await usersModel.create({
@@ -43,9 +41,44 @@ module.exports = {
 
          res.json({
             status:200,
-            "message":"Account created",
-            "token":tokenGenerate(newUser.id)
+            message:"Account created",
+            token:tokenGenerate(newUser.id)
          })
+
+      } catch (error) {
+         console.log(error)
+         res.sendStatus(500)
+      }
+   },
+   DELETE:async(req,res) => {
+      try {
+        const { token ,  password } = req.body
+         
+         const userID = tokenVerify(token)
+         const user = await usersModel.findOne({
+            where:{id:userID}
+         })
+
+         if(user) {
+            const isCorrect = passwordVerify(password , user.password)
+            if(isCorrect) {
+               const deletedUser = await usersModel.destroy({
+                  where:{id:userID}
+               })
+   
+               console.log(deletedUser)
+   
+               res.json("deleted")
+            }else {
+               res.send("error occured")
+            }
+
+         }else {
+            res.json({
+               message:"Bu foydalanuvchi mavjud emas"
+            })
+         }
+
 
       } catch (error) {
          console.log(error)
@@ -114,7 +147,7 @@ module.exports = {
 
             res.json({
                status:200,
-               message:`To ${dataValues.email} sent verification code `
+               message:`${dataValues.email} emailga  tasdiqlash kodi yuborildi`
             })
          }else {
             res.json({
@@ -143,11 +176,15 @@ module.exports = {
                   email:email
                }
             })
+
+            const updatedUser = await usersModel.findOne({
+               where:{email:email}
+            })
    
             res.json({
                status:200,
                message:"password changed",
-               token:tokenGenerate(user.id)
+               token:tokenGenerate(updatedUser.id)
             })
 
          }else {
@@ -186,7 +223,11 @@ module.exports = {
             })
 
 
-            res.json(tokenGenerateP(email))
+            res.json({
+               status:200,
+               message:"Code verifyed",
+               token:tokenGenerateP(email)
+            })
          }else {
             res.json({
                status:200,
@@ -200,7 +241,28 @@ module.exports = {
    },
    USERNAME_CHECKER:async(req,res) => {
       try {
-         res.json("ok")
+         const { username } = req.body
+
+         const isEmpty = await usersModel.findOne({
+            where: {
+               username:username
+            }
+         })
+
+
+         console.log(isEmpty)
+
+         if(isEmpty) {
+            res.json({
+               status:200,
+               message:"bu foydalanuvchi mavjud"
+            })
+         }else {
+            res.json({
+               status:200,
+               message:"bosh"
+            })
+         }
       } catch (error) {
          console.log(error)
          res.sendStatus(500)
